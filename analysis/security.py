@@ -1,8 +1,8 @@
+from typing import List, Set
 from dataclasses import dataclass
 from enum import Enum, unique, auto
-
 from pandas import DataFrame
-from typing import List, Set
+
 from data import Column
 
 
@@ -39,7 +39,7 @@ def _get_security(df: DataFrame, identifier: int) -> Security:
     per_action: DataFrame = (
         df[[Column.ACTION.value, Column.QUANTITY.value]].groupby(Column.ACTION.value).sum().reset_index()
     )
-    for index, row in per_action.iterrows():
+    for _, row in per_action.iterrows():
         if row[Column.ACTION.value] in ['ק/חו"ל', "קניה"]:
             quantity += row[Column.QUANTITY.value]
         else:
@@ -60,15 +60,3 @@ def get_securities(df: DataFrame) -> Securities:
     }
     security_ids: Set[int] = set(df[Column.PAPER_OR_TRANSACTION_NUM.value].unique())
     return [_get_security(df, identifier) for identifier in security_ids - exclude]
-
-
-def main():
-    import data
-    from pprint import pprint
-
-    df = data.parse("data.json")
-    pprint(get_securities(df))
-
-
-if __name__ == "__main__":
-    main()

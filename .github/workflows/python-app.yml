@@ -44,11 +44,16 @@ jobs:
         # check the rest while printing source
         flake8 . --count --statistics --ignore=E501 --show-source
 
-    - name: pylint (skipped for now)
+    - name: pylint
       if: ${{ always() }}
       continue-on-error: true
       run: |
-        pylint .
+        cd ..
+        pylint finance \
+          --max-line-length=120 \
+          --disable=missing-docstring,no-member,broad-except \
+          --variable-rgx="^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$" \
+          --argument-rgx="^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$"
 
     - name: bandit
       if: ${{ always() }}
@@ -60,8 +65,12 @@ jobs:
       run: |
         black . --check --line-length=120 --target-version=py38 --diff
 
-    - name: pytest (skipped for now)
+    - name: pytest
       continue-on-error: true
       if: ${{ success() }}
       run: |
         pytest
+        # exit-code 5 (no tests found) is still OK
+        if [[ $? == 5 ]]; then
+          exit 0;
+        fi;

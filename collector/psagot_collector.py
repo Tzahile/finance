@@ -1,8 +1,7 @@
-import requests
 import datetime
 import logging
-
 from urllib.parse import urljoin
+import requests
 
 
 def get_logger(logger_name):
@@ -16,27 +15,25 @@ def get_logger(logger_name):
     return logger
 
 
-class PsagotCollector(object):
+class PsagotCollector:
     BASE_URL = "https://sparkpsagot.ordernet.co.il/api/"
     DATETIME_FORMAT = "%Y-%m-%dT%H:00:00.000Z"
 
     def __init__(self, username, password, account_number, logger=None):
         self.username = username
         self.password = password
-        self.logger = get_logger(self.__class__.__name__) if logger is None else logger
+        self.log = get_logger(self.__class__.__name__) if logger is None else logger
         self.account_number = account_number
 
     def send_request(self, prepared_request):
         session = requests.Session()
         response = session.send(request=prepared_request)
 
-        if response.status_code in [200]:
+        try:
+            return response.json()
 
-            try:
-                return response.json()
-
-            except Exception:
-                self.logger("parsing error")
+        except Exception as e:
+            self.log.error(e)
 
     def _request_authenticate(self):
         auth_end_point = "Auth/Authenticate"
