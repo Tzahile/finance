@@ -1,8 +1,8 @@
+from typing import List, Set
 from dataclasses import dataclass
 from enum import Enum, unique, auto
-
 from pandas import DataFrame
-from typing import List, Set
+
 from data import Column
 
 
@@ -17,6 +17,7 @@ class Security:
     """
     A trade-able financial asset
     """
+
     name: str
     identifier: int
     quantity: int
@@ -35,11 +36,10 @@ def _get_security(df: DataFrame, identifier: int) -> Security:
     name: str = df[Column.PAPER_OR_TRANSACTION.value].values[-1]
 
     quantity: int = 0
-    per_action: DataFrame = (df[[Column.ACTION.value, Column.QUANTITY.value]]
-                             .groupby(Column.ACTION.value)
-                             .sum()
-                             .reset_index())
-    for index, row in per_action.iterrows():
+    per_action: DataFrame = (
+        df[[Column.ACTION.value, Column.QUANTITY.value]].groupby(Column.ACTION.value).sum().reset_index()
+    )
+    for _, row in per_action.iterrows():
         if row[Column.ACTION.value] in ['ק/חו"ל', "קניה"]:
             quantity += row[Column.QUANTITY.value]
         else:
@@ -49,11 +49,7 @@ def _get_security(df: DataFrame, identifier: int) -> Security:
     if 0 in df[Column.COMMISSION.value].unique():
         currency = Currency.USD
 
-    return Security(name=name,
-                    identifier=identifier,
-                    quantity=quantity,
-                    is_active=quantity > 0,
-                    currency=currency)
+    return Security(name=name, identifier=identifier, quantity=quantity, is_active=quantity > 0, currency=currency)
 
 
 def get_securities(df: DataFrame) -> Securities:
@@ -64,14 +60,3 @@ def get_securities(df: DataFrame) -> Securities:
     }
     security_ids: Set[int] = set(df[Column.PAPER_OR_TRANSACTION_NUM.value].unique())
     return [_get_security(df, identifier) for identifier in security_ids - exclude]
-
-
-def main():
-    import data
-    from pprint import pprint
-    df = data.parse('data.json')
-    pprint(get_securities(df))
-
-
-if __name__ == '__main__':
-    main()
