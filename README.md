@@ -6,5 +6,8 @@
 
 #### Run
 ```bash
+find ./deployment -type f -iname "*.sh" -exec chmod +x {} \; 
+chmod +x ./run.sh
+
 ./run.sh
 ```
