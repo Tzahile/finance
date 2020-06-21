@@ -6,7 +6,7 @@ from data.Column import Column
 
 
 def parse(json_file_path: str) -> DataFrame:
-    with open(json_file_path, 'r') as json_file:
+    with open(json_file_path, "r") as json_file:
         df: DataFrame = json_normalize(json.load(json_file))
 
         for col in Column.bad_fields():
@@ -18,9 +18,10 @@ def parse(json_file_path: str) -> DataFrame:
 
 def main() -> None:
     import pandas as pd
-    pd.set_option('display.max_columns', None)
-    print(parse('../data.json').head())
+
+    pd.set_option("display.max_columns", None)
+    print(parse("../data.json").head())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

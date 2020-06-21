@@ -17,6 +17,7 @@ class Security:
     """
     A trade-able financial asset
     """
+
     name: str
     identifier: int
     quantity: int
@@ -35,10 +36,9 @@ def _get_security(df: DataFrame, identifier: int) -> Security:
     name: str = df[Column.PAPER_OR_TRANSACTION.value].values[-1]
 
     quantity: int = 0
-    per_action: DataFrame = (df[[Column.ACTION.value, Column.QUANTITY.value]]
-                             .groupby(Column.ACTION.value)
-                             .sum()
-                             .reset_index())
+    per_action: DataFrame = (
+        df[[Column.ACTION.value, Column.QUANTITY.value]].groupby(Column.ACTION.value).sum().reset_index()
+    )
     for index, row in per_action.iterrows():
         if row[Column.ACTION.value] in ['ק/חו"ל', "קניה"]:
             quantity += row[Column.QUANTITY.value]
@@ -49,11 +49,7 @@ def _get_security(df: DataFrame, identifier: int) -> Security:
     if 0 in df[Column.COMMISSION.value].unique():
         currency = Currency.USD
 
-    return Security(name=name,
-                    identifier=identifier,
-                    quantity=quantity,
-                    is_active=quantity > 0,
-                    currency=currency)
+    return Security(name=name, identifier=identifier, quantity=quantity, is_active=quantity > 0, currency=currency)
 
 
 def get_securities(df: DataFrame) -> Securities:
@@ -69,9 +65,10 @@ def get_securities(df: DataFrame) -> Securities:
 def main():
     import data
     from pprint import pprint
-    df = data.parse('data.json')
+
+    df = data.parse("data.json")
     pprint(get_securities(df))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
