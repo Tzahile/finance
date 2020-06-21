@@ -33,7 +33,11 @@ jobs:
     - name: mypy
       if: ${{ always() }}
       run: |
-        mypy --ignore-missing-imports .
+        mypy .                          \
+          --ignore-missing-imports      \
+          --disallow-untyped-defs       \
+          --disallow-untyped-decorators \
+          --disallow-incomplete-defs
 
     - name: flake8
       if: ${{ always() }}
@@ -49,10 +53,10 @@ jobs:
       continue-on-error: true
       run: |
         cd ..
-        pylint finance \
-          --max-line-length=120 \
-          --disable=missing-docstring,no-member,broad-except \
-          --variable-rgx="^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$" \
+        pylint finance                                        \
+          --max-line-length=120                               \
+          --disable=missing-docstring,no-member,broad-except  \
+          --variable-rgx="^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$"   \
           --argument-rgx="^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$"
 
     - name: bandit
