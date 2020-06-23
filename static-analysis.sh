@@ -56,7 +56,7 @@ function check_pylint() {
 }
 
 function run_bandit() {
-    bandit ${TOP_LEVEL_DIR} -r --exclude="venv"
+    bandit ${TOP_LEVEL_DIR} -r --exclude="venv,tests"
 }
 
 function check_bandit() {
