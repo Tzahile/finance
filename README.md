@@ -20,3 +20,8 @@ Our code base is being strictly checked with the following tools:
 - pylint
 - black (line-length=120 --target-version=py38)
 - pytest
+
+To run these checks locally, you can use the provided tool:
+```bash
+./static-analysis
+```
