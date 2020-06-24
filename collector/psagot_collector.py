@@ -29,7 +29,8 @@ class PsagotCollector:
         self.log = logger or get_logger(self.__class__.__name__)
         self.account_number = account_number
 
-    def send_request(self, prepared_request: PreparedRequest) -> Response:
+    @staticmethod
+    def send_request(prepared_request: PreparedRequest) -> Response:
         session = requests.Session()
         return session.send(request=prepared_request)
 
