@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pymodm import MongoModel, fields
-from utils.configuration import Configurations
+from utils.configuration import config
 
 
 class User(MongoModel):
@@ -16,4 +16,4 @@ class User(MongoModel):
         return User(**odm_dict)
 
     class Meta:
-        connection_alias = Configurations().mongo.get("ALIAS", "default")
+        connection_alias = config.get("MONGO").get("ALIAS", "default")

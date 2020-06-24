@@ -1,8 +1,8 @@
-from pymodm.connection import connect
+from typing import Dict
 
-from utils.configuration import Configurations
+from pymodm.connection import connect
 
 
 class BaseMongo:
-    def __init__(self, connection_details: Configurations) -> None:
-        connect(connection_details.mongo.get("URI"), alias=connection_details.mongo.get("ALIAS", "default"))
+    def __init__(self, config: Dict) -> None:
+        connect(config.get("MONGO", {}).get("URI"), alias=config.get("MONGO", {}).get("ALIAS", "default"))

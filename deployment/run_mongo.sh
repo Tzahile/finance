@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CONTAINER_NAME="mongo"
+CONTAINER_NAME="fin-mongo"
 
 if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
   docker stop $CONTAINER_NAME

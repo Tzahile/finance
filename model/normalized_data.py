@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pymodm import MongoModel, fields
 
-from utils.configuration import Configurations
+from utils.configuration import config
 
 
 class NormalizedData(MongoModel):
@@ -26,4 +26,4 @@ class NormalizedData(MongoModel):
         return NormalizedData(**odm_dict)
 
     class Meta:
-        connection_alias = Configurations().mongo.get("ALIAS", "default")
+        connection_alias = config.get("MONGO").get("ALIAS", "default")

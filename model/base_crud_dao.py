@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from typing import Dict
 
 from bson.errors import InvalidId
 from pymodm import MongoModel
@@ -12,7 +13,7 @@ class BaseCrudDao(BaseMongo):
     def get_odm(self) -> MongoModel:
         raise NotImplementedError("Not Implemented")
 
-    def create(self, entity: dict) -> MongoModel:
+    def create(self, entity: Dict) -> MongoModel:
         entity_copy = entity.copy()
         BaseCrudDao.prepare_id(entity_copy)
         return self.get_odm().from_document(entity_copy).save().to_model()
@@ -23,7 +24,7 @@ class BaseCrudDao(BaseMongo):
     def delete(self, entity_id: str) -> None:
         self.get_odm().objects.get_queryset().get({"_id": to_object_id(entity_id)}).delete()
 
-    def update(self, entity: dict) -> int:
+    def update(self, entity: Dict) -> int:
         entity_copy = entity.copy()
         entity_id = entity_copy.pop("id", None)
         return (
@@ -34,7 +35,7 @@ class BaseCrudDao(BaseMongo):
         )
 
     @staticmethod
-    def prepare_id(entity: dict) -> None:
+    def prepare_id(entity: Dict) -> None:
         try:
             entity["_id"] = to_object_id(entity.pop("id", None))
 
