@@ -1,0 +1,3 @@
+mongo:
+  ALIAS: finance
+  URI: mongodb://localhost:27017/finance
