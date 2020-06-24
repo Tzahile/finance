@@ -8,7 +8,6 @@ from utils.utils import to_object_id
 
 
 class BaseCrudDao(BaseMongo):
-
     @abstractmethod
     def get_odm(self) -> MongoModel:
         raise NotImplementedError("Not Implemented")

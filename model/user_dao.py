@@ -5,6 +5,5 @@ from model.user import User
 
 
 class UserDao(BaseCrudDao):
-
     def get_odm(self) -> Type[User]:
         return User
