@@ -7,6 +7,7 @@ from utils.configuration import config
 
 class NormalizedData(MongoModel):
     id = fields.CharField()
+    raw_data_id = fields.ObjectIdField(required=True)
     user_id = fields.ObjectIdField(required=True)
     date = fields.DateTimeField(blank=True)
     paper_num = fields.CharField(blank=True)
