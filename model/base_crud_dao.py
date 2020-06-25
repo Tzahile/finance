@@ -1,7 +1,6 @@
 from abc import abstractmethod
 from typing import Dict
 
-from bson.errors import InvalidId
 from pymodm import MongoModel
 
 from database.mongo_connector import BaseMongo
