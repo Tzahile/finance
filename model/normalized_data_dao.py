@@ -16,13 +16,14 @@ class NormalizedDataDao(BaseCrudDao):
     ) -> List[NormalizedData]:
 
         query = {"user_id": user_id}
-        if start_date and end_date:
-            query.update({"date": {"$gte": start_date, "$lte": end_date}})
 
-        elif start_date:
-            query.update({"date": {"$gte": start_date}})
+        if start_date or end_date:
+            query["date"] = {}
 
-        elif end_date:
-            query.update({"date": {"$lte": end_date}})
+        if start_date:
+            query["date"]["$gte"] = start_date
+
+        if end_date:
+            query["date"]["$lt"] = end_date
 
         return list(map(NormalizedData.to_model, self.get_odm().objects.get_queryset().raw(query)))

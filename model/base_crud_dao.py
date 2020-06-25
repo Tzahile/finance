@@ -36,9 +36,5 @@ class BaseCrudDao(BaseMongo):
 
     @staticmethod
     def prepare_id(entity: Dict) -> None:
-        try:
+        if not entity.get("_id"):
             entity["_id"] = to_object_id(entity.pop("id", None))
-
-        except InvalidId:
-            entity.pop("id", None)
-            entity.pop("_id", None)
