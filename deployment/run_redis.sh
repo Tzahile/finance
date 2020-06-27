@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-docker stop fin-redis &> /dev/null
-docker rm fin-redis   &> /dev/null
+CONTAINER_NAME="fin-redis"
 
-docker run -d --name fin-redis -p 6379:6379  -v redis.conf:/redis.conf redis redis-server /redis.conf
+docker stop ${CONTAINER_NAME} &> /dev/null
+docker rm   ${CONTAINER_NAME} &> /dev/null
+
+docker run --name ${CONTAINER_NAME} -p 6379:6379 -v redis.conf:/redis.conf -d redis redis-server /redis.conf
