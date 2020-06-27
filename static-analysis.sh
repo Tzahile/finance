@@ -120,7 +120,8 @@ case $1 in
         ;;
     --stop-on-failure)
         STOP_ON_FAILURE=1
-        ;&
+        run_all_summary
+        ;;
     *)
         run_all_summary
         ;;

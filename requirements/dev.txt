@@ -1,0 +1,9 @@
+-r common.txt
+mypy
+black
+pylint
+flake8
+hypothesis
+fakeredis
+bandit
+pytest
