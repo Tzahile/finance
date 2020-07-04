@@ -49,10 +49,10 @@ jobs:
       if: ${{ always() }}
       run: |
         cd ..
-        pylint finance                                        \
-          --max-line-length=120                               \
-          --disable=missing-docstring,no-member,broad-except  \
-          --variable-rgx="^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$"   \
+        pylint finance                                                          \
+          --max-line-length=120                                                 \
+          --disable=missing-docstring,no-member,broad-except,bad-continuation   \
+          --variable-rgx="^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$"                     \
           --argument-rgx="^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$"
 
     - name: bandit
