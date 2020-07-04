@@ -7,3 +7,4 @@ hypothesis
 fakeredis
 bandit
 pytest
+mongomock

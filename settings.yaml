@@ -1,0 +1,5 @@
+MONGO:
+  URI: mongodb://localhost:27017
+  FINANCE_DB: finance
+  USER_COLLECTION: users
+  NORMELIZED_DATA_COLLECTION: normalized_data
