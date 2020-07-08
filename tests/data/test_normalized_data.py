@@ -1,6 +1,9 @@
+# pylint: disable=no-value-for-parameter
+from datetime import datetime
+
 import hypothesis.strategies as st
 from hypothesis import given, infer
-from datetime import datetime
+
 from data.normalized_data import NormalizedData
 
 
@@ -8,10 +11,10 @@ real_float = st.floats(allow_infinity=False, allow_nan=False)
 
 
 @st.composite
-def rounded_datetime(draw):
+def rounded_datetime(draw) -> datetime:
     generated_datetime = draw(st.datetimes())
-    date_str = generated_datetime.strftime('%Y-%m-%dT%H:%M:%S')
-    generated_datetime_rounded = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S')
+    date_str = generated_datetime.strftime("%Y-%m-%dT%H:%M:%S")
+    generated_datetime_rounded = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S")
     return generated_datetime_rounded
 
 
@@ -33,7 +36,7 @@ def test_get_doc(normalized_data: NormalizedData):
         cash_balance=real_float,
         commission=real_float,
         cost=real_float,
-        date=rounded_datetime()
+        date=rounded_datetime(),
     )
 )
 def test_to_json(normalized_data: NormalizedData):

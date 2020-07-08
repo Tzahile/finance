@@ -19,7 +19,7 @@ class NormalizedData:
     cash_balance: float
     commission: float
     cost: float
-    _date: datetime
+    date: datetime
     raw_data_id: Optional[ObjectId] = None
     _id: Optional[ObjectId] = None
 
@@ -43,6 +43,6 @@ class NormalizedData:
     @staticmethod
     def from_json(json_normalized_data: str) -> NormalizedData:
         normalized_data = NormalizedData(**json.loads(json_normalized_data, object_hook=json_util.object_hook))
-        date_str = normalized_data.date.strftime('%Y-%m-%dT%H:%M:%S')
-        normalized_data.date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S')
+        date_str = normalized_data.date.strftime("%Y-%m-%dT%H:%M:%S")
+        normalized_data.date = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S")
         return normalized_data
