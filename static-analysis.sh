@@ -43,12 +43,11 @@ function check_flake8() {
 }
 
 function run_pylint() {
-    PYTHONPATH=${TOP_LEVEL_DIR} pylint ${TOP_LEVEL_DIR}                     \
-        --max-line-length=120                                               \
-        --disable=missing-docstring,no-member,broad-except,bad-continuation \
-        --variable-rgx="^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$"                   \
-        --argument-rgx="^[a-z][a-z0-9]*((_[a-z0-9]+)*)?$"                   \
-        --ignore=venv
+    PYTHONPATH=${TOP_LEVEL_DIR} pylint ${TOP_LEVEL_DIR}     \
+        --max-line-length=120                               \
+        --ignore-imports=yes                                \
+        --ignore=venv                                       \
+        --disable=missing-docstring,no-member,broad-except,invalid-name,bad-continuation,too-many-instance-attributes,R0801
 }
 
 function check_pylint() {
