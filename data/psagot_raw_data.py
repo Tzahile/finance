@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from typing import Dict, Optional
 import json
 
@@ -23,7 +23,11 @@ class PsagotRawData:
     n: float  # zhut_neto
     o: float  # hova_neto
     user_id: ObjectId
+    _cls: str = field(init=False)
     _id: Optional[ObjectId] = None
+
+    def __post_init__(self):
+        self._cls = self.__class__.__name__
 
     @property
     def uid(self) -> ObjectId:
@@ -43,5 +47,7 @@ class PsagotRawData:
         return json.dumps(asdict(self), default=json_util.default)
 
     @staticmethod
-    def from_json(json_user: str) -> PsagotRawData:
-        return PsagotRawData(**json.loads(json_user, object_hook=json_util.object_hook))
+    def from_json(json_data: str) -> PsagotRawData:
+        loaded_json = json.loads(json_data, object_hook=json_util.object_hook)
+        loaded_json.pop("_cls", None)
+        return PsagotRawData(**loaded_json)
