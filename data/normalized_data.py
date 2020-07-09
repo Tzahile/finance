@@ -1,6 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, asdict
 from typing import Dict, Optional
+from datetime import timedelta
 from datetime import datetime
 import json
 
@@ -43,6 +44,6 @@ class NormalizedData:
     @staticmethod
     def from_json(json_normalized_data: str) -> NormalizedData:
         normalized_data = NormalizedData(**json.loads(json_normalized_data, object_hook=json_util.object_hook))
-        date_str = normalized_data.date.strftime("%Y-%m-%dT%H:%M:%S")
-        normalized_data.date = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S")
+        normalized_data.date = normalized_data.date - timedelta(microseconds=normalized_data.date.microsecond)
+        normalized_data.date = normalized_data.date.replace(tzinfo=None)
         return normalized_data

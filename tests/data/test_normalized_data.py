@@ -1,4 +1,5 @@
 # pylint: disable=no-value-for-parameter
+from datetime import timedelta
 from datetime import datetime
 
 import hypothesis.strategies as st
@@ -13,9 +14,7 @@ real_float = st.floats(allow_infinity=False, allow_nan=False)
 @st.composite
 def rounded_datetime(draw) -> datetime:
     generated_datetime = draw(st.datetimes())
-    date_str = generated_datetime.strftime("%Y-%m-%dT%H:%M:%S")
-    generated_datetime_rounded = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S")
-    return generated_datetime_rounded
+    return generated_datetime - timedelta(microseconds=generated_datetime.microsecond)
 
 
 @given(st.builds(NormalizedData, _id=infer, raw_data_id=infer))
