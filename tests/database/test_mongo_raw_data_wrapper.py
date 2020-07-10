@@ -17,12 +17,12 @@ object_id = ObjectId()
 
 
 class TestMongoUserWrapper(unittest.TestCase):
-    def setUp(self) -> None:
+    @staticmethod
+    def setup_example() -> None:
         mongo_crud_wrapper.client = mongomock.MongoClient()
 
     @given(st.builds(PsagotRawData, _id=infer))
     def test_create_and_get(self, raw_data: PsagotRawData):
-        print(raw_data)
         new_raw_data = mongo_raw_data_wrapper.create(raw_data)
 
         if not raw_data.uid:
@@ -75,3 +75,10 @@ class TestMongoUserWrapper(unittest.TestCase):
     def test_get_user_raw_data_in_range(self, raw_data_list: List[PsagotRawData]):
         result = mongo_raw_data_wrapper.insert_bulk(raw_data_list)
         self.assertEqual(len(result.inserted_ids), len(raw_data_list))
+
+        bulk_by_user = []
+        if raw_data_list:
+            user_id = raw_data_list[0].user_id
+            bulk_by_user = list(mongo_raw_data_wrapper.get_bulk_by_user(user_id))
+
+        self.assertEqual(len(bulk_by_user), len(raw_data_list))

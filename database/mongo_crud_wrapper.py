@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, Generator
 
 from pymongo.results import UpdateResult, DeleteResult, InsertManyResult
 from pymongo.errors import OperationFailure
@@ -28,7 +28,7 @@ def create(collection_name: str, entity: Dict) -> bool:
     return status.acknowledged
 
 
-def insert_bulk(collection_name: str, bulk: List) -> InsertManyResult:
+def insert_bulk(collection_name: str, bulk: Generator) -> InsertManyResult:
     return get_db()[collection_name].insert_many(bulk)
 
 

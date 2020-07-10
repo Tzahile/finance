@@ -1,4 +1,4 @@
-from typing import List
+from typing import Iterable, Generator
 from bson import ObjectId
 from pymongo.results import UpdateResult, DeleteResult, InsertManyResult
 
@@ -15,11 +15,9 @@ def create(raw_data: PsagotRawData) -> PsagotRawData:
     return PsagotRawData(**raw_data_doc)
 
 
-def insert_bulk(bulk: List[PsagotRawData]) -> InsertManyResult:
-    doc_bulk = [item.get_doc() for item in bulk]
-    if doc_bulk:
-        return mongo_crud_wrapper.insert_bulk(COLLECTION_NAME, doc_bulk)
-    return InsertManyResult([], True)
+def insert_bulk(bulk: Iterable[PsagotRawData]) -> InsertManyResult:
+    doc_bulk = (item.get_doc() for item in bulk)
+    return mongo_crud_wrapper.insert_bulk(COLLECTION_NAME, doc_bulk)
 
 
 def get(raw_data_id: ObjectId) -> PsagotRawData:
@@ -27,10 +25,10 @@ def get(raw_data_id: ObjectId) -> PsagotRawData:
     return PsagotRawData(**raw_data_id_doc)
 
 
-def get_bulk_by_user(user_id: ObjectId) -> List[PsagotRawData]:
+def get_bulk_by_user(user_id: ObjectId) -> Generator[PsagotRawData, None, None]:
     query = {"user_id": user_id}
     raw_data_results = mongo_crud_wrapper.get_by_query(COLLECTION_NAME, query)
-    return [PsagotRawData(**result) for result in raw_data_results]
+    return (PsagotRawData(**result) for result in raw_data_results)
 
 
 def remove(raw_data_id: ObjectId) -> DeleteResult:
