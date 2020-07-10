@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass, asdict, field
+from dataclasses import dataclass, asdict
 from typing import Dict, Optional
 import json
 
@@ -11,9 +11,9 @@ class PsagotRawData:
     _t: str  # type
     a: str  # account_number
     b: str  # date
-    c: int  # paper_or_transaction_num
-    d: int  # refernce_number
-    e: int  # unkown
+    c: str  # paper_or_transaction_num
+    d: str  # refernce_number
+    e: str  # unkown
     f: str  # paper_or_transactionv
     i: float  # quantity
     j: str  # action
@@ -23,10 +23,10 @@ class PsagotRawData:
     n: float  # zhut_neto
     o: float  # hova_neto
     user_id: ObjectId
-    _cls: str = field(init=False)
+    _cls: str = ""
     _id: Optional[ObjectId] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self._cls = self.__class__.__name__
 
     @property
@@ -49,5 +49,4 @@ class PsagotRawData:
     @staticmethod
     def from_json(json_data: str) -> PsagotRawData:
         loaded_json = json.loads(json_data, object_hook=json_util.object_hook)
-        loaded_json.pop("_cls", None)
         return PsagotRawData(**loaded_json)
