@@ -7,6 +7,7 @@ from bson import ObjectId, json_util
 
 from data.common import Provider
 
+
 @dataclass
 class PsagotRawData:
     _t: str  # type
@@ -24,7 +25,7 @@ class PsagotRawData:
     n: float  # zhut_neto
     o: float  # hova_neto
     user_id: ObjectId
-    _cls: str = Provider.ORDERNET
+    _provider: Provider = Provider.ORDERNET
     _id: Optional[ObjectId] = None
 
     @property
