@@ -5,6 +5,7 @@ import json
 
 from bson import ObjectId, json_util
 
+from data.common import Provider
 
 @dataclass
 class PsagotRawData:
@@ -23,11 +24,8 @@ class PsagotRawData:
     n: float  # zhut_neto
     o: float  # hova_neto
     user_id: ObjectId
-    _cls: str = ""
+    _cls: str = Provider.ORDERNET
     _id: Optional[ObjectId] = None
-
-    def __post_init__(self) -> None:
-        self._cls = self.__class__.__name__
 
     @property
     def uid(self) -> ObjectId:
