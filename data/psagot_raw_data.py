@@ -5,15 +5,17 @@ import json
 
 from bson import ObjectId, json_util
 
+from data.common import Provider
+
 
 @dataclass
 class PsagotRawData:
     _t: str  # type
     a: str  # account_number
     b: str  # date
-    c: int  # paper_or_transaction_num
-    d: int  # refernce_number
-    e: int  # unkown
+    c: str  # paper_or_transaction_num
+    d: str  # refernce_number
+    e: str  # unkown
     f: str  # paper_or_transactionv
     i: float  # quantity
     j: str  # action
@@ -23,6 +25,7 @@ class PsagotRawData:
     n: float  # zhut_neto
     o: float  # hova_neto
     user_id: ObjectId
+    _provider: Provider = Provider.ORDERNET
     _id: Optional[ObjectId] = None
 
     @property
@@ -43,5 +46,6 @@ class PsagotRawData:
         return json.dumps(asdict(self), default=json_util.default)
 
     @staticmethod
-    def from_json(json_user: str) -> PsagotRawData:
-        return PsagotRawData(**json.loads(json_user, object_hook=json_util.object_hook))
+    def from_json(json_data: str) -> PsagotRawData:
+        loaded_json = json.loads(json_data, object_hook=json_util.object_hook)
+        return PsagotRawData(**loaded_json)
