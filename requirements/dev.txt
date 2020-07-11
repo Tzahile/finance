@@ -8,3 +8,4 @@ fakeredis
 bandit
 pytest
 mongomock
+pytest-cov
