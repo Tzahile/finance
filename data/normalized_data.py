@@ -11,11 +11,11 @@ from bson import ObjectId, json_util
 @dataclass
 class NormalizedData:
     user_id: ObjectId
-    paper_num: int
-    transaction_num: int
+    paper_id: str
+    transaction_id: str
     paper: str
     transaction: str
-    quantity: int
+    quantity: float
     action: str
     cash_balance: float
     commission: float

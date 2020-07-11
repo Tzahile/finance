@@ -34,6 +34,7 @@ def test_get_doc(normalized_data: NormalizedData):
         raw_data_id=infer,
         cash_balance=real_float,
         commission=real_float,
+        quantity=real_float,
         cost=real_float,
         date=rounded_datetime(),
     )

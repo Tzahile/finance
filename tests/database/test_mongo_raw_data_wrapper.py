@@ -72,7 +72,7 @@ class TestMongoUserWrapper(unittest.TestCase):
         self.assertEqual(retrieved_raw_data, updated_raw_data)
 
     @given(st.lists(st.builds(PsagotRawData, user_id=st.sampled_from([ObjectId()]))))
-    def test_get_user_raw_data_in_range(self, raw_data_list: List[PsagotRawData]):
+    def test_get_bulk_by_user(self, raw_data_list: List[PsagotRawData]):
         result = mongo_raw_data_wrapper.insert_bulk(raw_data_list)
         self.assertEqual(len(result.inserted_ids), len(raw_data_list))
 
