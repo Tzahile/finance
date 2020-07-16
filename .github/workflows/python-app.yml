@@ -52,7 +52,13 @@ jobs:
         pylint finance                                                          \
           --max-line-length=120                                                 \
           --ignore-imports=yes                                                  \
-          --disable=missing-docstring,no-member,broad-except,invalid-name,bad-continuation,too-many-instance-attributes,R0801
+          --disable="missing-docstring,
+                    no-member,
+                    broad-except,
+                    invalid-name,
+                    bad-continuation,
+                    too-many-instance-attributes,
+                    R0801"
 
     - name: bandit
       if: ${{ always() }}

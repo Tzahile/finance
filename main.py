@@ -4,6 +4,7 @@ This is a temporary template for our POC flow
 import datetime
 import yaml
 
+from collector import stock_exchange
 from collector.psagot_collector import PsagotCollector
 from database import cache
 
@@ -25,18 +26,12 @@ tickers = ["MSFT", "AAPL"]
 
 # 4. Download historical closing-prices per ticker
 
-prices = {
-    "MSFT": [
-        (datetime.date.fromisoformat("2020-01-01"), 100.5),
-        (datetime.date.fromisoformat("2020-01-02"), 770.5),
-        (datetime.date.fromisoformat("2020-01-03"), 888.5),
-    ],
-    "AAPL": [
-        (datetime.date.fromisoformat("2020-01-01"), 100.5),
-        (datetime.date.fromisoformat("2020-01-02"), 770.5),
-        (datetime.date.fromisoformat("2020-01-03"), 888.5),
-    ],
-}
+start_date = datetime.date.fromisoformat("2020-01-01")
+end_date = datetime.date.fromisoformat("2020-02-01")
+
+prices = {}
+for ticker in tickers:
+    prices[ticker] = stock_exchange.get_prices(ticker, start_date, end_date)
 
 # 5. Store prices in Redis
 

@@ -47,7 +47,13 @@ function run_pylint() {
         --max-line-length=120                               \
         --ignore-imports=yes                                \
         --ignore=venv                                       \
-        --disable=missing-docstring,no-member,broad-except,invalid-name,bad-continuation,too-many-instance-attributes,R0801
+        --disable="missing-docstring,
+                   no-member,
+                   broad-except,
+                   invalid-name,
+                   bad-continuation,
+                   too-many-instance-attributes,
+                   R0801"
 }
 
 function check_pylint() {
