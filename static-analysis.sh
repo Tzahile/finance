@@ -45,6 +45,7 @@ function check_flake8() {
 function run_pylint() {
     PYTHONPATH=${TOP_LEVEL_DIR} pylint ${TOP_LEVEL_DIR}     \
         --max-line-length=120                               \
+        --extension-pkg-whitelist=pydantic                  \
         --ignore-imports=yes                                \
         --ignore=venv                                       \
         --disable=missing-docstring,no-member,broad-except,invalid-name,bad-continuation,too-many-instance-attributes,R0801
