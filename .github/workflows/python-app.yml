@@ -51,6 +51,7 @@ jobs:
         cd ..
         pylint finance                                                          \
           --max-line-length=120                                                 \
+          --extension-pkg-whitelist=pydantic                                    \
           --ignore-imports=yes                                                  \
           --disable=missing-docstring,no-member,broad-except,invalid-name,bad-continuation,too-many-instance-attributes,R0801
 
