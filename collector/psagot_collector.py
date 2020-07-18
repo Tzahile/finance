@@ -2,7 +2,7 @@ import datetime
 from datetime import datetime as dt
 import logging
 from logging import Logger
-from typing import List, Dict
+from typing import List, Dict, Any
 from urllib.parse import urljoin
 import requests
 from requests import PreparedRequest, Response
@@ -59,7 +59,7 @@ class PsagotCollector:
     def authenticate(self) -> Dict[str, str]:
         return self.send_request(self._request_authenticate()).json()
 
-    def get_data(self, start_date: dt = None, end_date: dt = None) -> List[Dict[str, str]]:
+    def get_data(self, start_date: dt = None, end_date: dt = None) -> List[Dict[str, Any]]:
         if not start_date:
             start_date = dt.now() - datetime.timedelta(days=3 * 365)
         if not end_date:

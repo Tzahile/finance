@@ -3,5 +3,7 @@ requests==2.24.0
 redis==3.5.3
 pymongo==3.10.1
 pyYAML==5.3.1
+phx-class-registry==3.0.5
+numpy==1.19.0
 yfinance==0.1.54
 lxml==4.5.2
