@@ -1,9 +1,13 @@
-from typing import Tuple, Iterable, List, Dict, Optional
+from typing import Tuple, Iterable, List, Dict
 import datetime
 import redis
 
 
 client = redis.Redis(host="localhost", port=6379)
+
+
+class CacheMiss(Exception):
+    pass
 
 
 def _to_date_obj(date: bytes) -> datetime.date:
@@ -21,9 +25,11 @@ def add_records(key: str, records: Iterable[Tuple[datetime.date, float]]) -> Non
         pipe.execute()
 
 
-def get_price(key: str, date: datetime.date) -> Optional[float]:
+def get_price(key: str, date: datetime.date) -> float:
     result = client.hget(key, str(date))
-    return float(result) if result else None
+    if not result:
+        raise CacheMiss
+    return float(result)
 
 
 def get_prices(key: str, start_date: datetime.date = None, end_date: datetime.date = None) -> List[float]:
