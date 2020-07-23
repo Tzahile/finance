@@ -6,7 +6,7 @@ import unittest
 
 from pymongo.errors import DuplicateKeyError
 import hypothesis.strategies as st
-from hypothesis import given, infer
+from hypothesis import given
 from bson import ObjectId
 import mongomock
 import pytest
@@ -22,7 +22,7 @@ def rounded_datetime(draw) -> datetime:
     return generated_datetime - timedelta(microseconds=generated_datetime.microsecond)
 
 
-normalized_data_strategy = st.builds(NormalizedData, _id=infer, date=rounded_datetime())
+normalized_data_strategy = st.builds(NormalizedData, date=rounded_datetime())
 
 
 class TestMongoUserWrapper(unittest.TestCase):
@@ -34,8 +34,7 @@ class TestMongoUserWrapper(unittest.TestCase):
     def test_create_and_get(self, normalized_data: NormalizedData):
         new_normalized_data = mongo_normalized_data_wrapper.create(normalized_data)
 
-        if not normalized_data.uid:
-            normalized_data.uid = new_normalized_data.uid
+        normalized_data.uid = new_normalized_data.uid
         self.assertEqual(normalized_data, new_normalized_data)
 
         retrieved_user = mongo_normalized_data_wrapper.get(new_normalized_data.uid)
@@ -46,8 +45,9 @@ class TestMongoUserWrapper(unittest.TestCase):
         new_normalized_data = mongo_normalized_data_wrapper.create(normalized_data)
         self.assertRaises(DuplicateKeyError, mongo_normalized_data_wrapper.create, new_normalized_data)
 
-    def test_get_not_existing(self):
-        self.assertRaises(StopIteration, mongo_normalized_data_wrapper.get, ObjectId())
+    @given(st.from_type(ObjectId))
+    def test_get_not_existing(self, object_id):
+        self.assertRaises(StopIteration, mongo_normalized_data_wrapper.get, object_id)
 
     @given(normalized_data_strategy)
     def test_create_and_remove(self, normalized_data: NormalizedData):

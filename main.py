@@ -1,28 +1,39 @@
 """
 This is a temporary template for our POC flow
 """
+from typing import List
 import datetime
+import os
 
 import yaml
 from bson import ObjectId
 
 from collector import stock_exchange
+from collector.excel_parser import parse_excel
 from collector.psagot_collector import PsagotCollector
 from converters.converters import convert_list
-from data.psagot_raw_data import PsagotRawData
+from data.ordernet_api_data import OrdernetApiData
+from data.ordernet_excel_data import OrdernetExcelData
 from database import mongo_raw_data_wrapper, mongo_normalized_data_wrapper
 from database import cache
 
-# 1. Extract data from Psagot
+USE_EXCEL = True
+user_id = ObjectId()
+raw_data_list: List = []
 
-with open("credentials.yaml") as yaml_file:
-    creds = yaml.safe_load(yaml_file)
-collector = PsagotCollector(creds["username"], creds["password"], creds["account_number"])
-data = collector.get_data()
+# 1. Extract data from Psagot
+if USE_EXCEL:
+    data = parse_excel(os.path.join(os.getcwd(), "data.xlsx"))
+    raw_data_list.extend([OrdernetExcelData(user_id=user_id, **transaction) for transaction in data])
+
+else:
+    with open("credentials.yaml") as yaml_file:
+        creds = yaml.safe_load(yaml_file)
+    collector = PsagotCollector(creds["username"], creds["password"], creds["account_number"])
+    data = collector.get_data()
+    raw_data_list.extend([OrdernetApiData(user_id=user_id, **transaction) for transaction in data])
 
 # 2. Store in Mongo
-user_id = ObjectId()
-raw_data_list = [PsagotRawData(user_id=user_id, **transaction) for transaction in data]
 
 # 2.1 Store Raw data in Mongo
 status = mongo_raw_data_wrapper.insert_bulk(raw_data_list)

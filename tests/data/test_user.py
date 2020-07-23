@@ -1,21 +1,21 @@
 import hypothesis.strategies as st
-from hypothesis import given, infer
+from hypothesis import given
+from bson import ObjectId
 
-from data.user import User
-
-
-@given(st.builds(User, _id=infer))
-def test_get_doc(user: User):
-    user_doc = user.get_doc()
-
-    if user.uid:
-        assert "_id" in user_doc
-    else:
-        assert "_id" not in user_doc
+from data.user_data import UserData
 
 
-@given(st.builds(User, _id=infer))
-def test_to_json(user: User):
+@given(st.from_type(UserData), st.one_of(st.from_type(ObjectId), st.none()))
+def test_get_doc(user: UserData, object_id):
+    user.uid = object_id
+    user_doc = user.to_doc()
+    data_obj = UserData.from_doc(user_doc)
+    assert data_obj == user
+
+
+@given(st.from_type(UserData), st.one_of(st.from_type(ObjectId), st.none()))
+def test_to_json(user: UserData, object_id):
+    user.uid = object_id
     user_json = user.to_json()
-    loaded_json = User.from_json(user_json)
+    loaded_json = UserData.from_json(user_json)
     assert loaded_json == user

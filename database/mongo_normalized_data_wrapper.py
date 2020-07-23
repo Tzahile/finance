@@ -6,31 +6,32 @@ from bson import ObjectId
 
 from database import mongo_crud_wrapper
 from data.normalized_data import NormalizedData
+from data.base_data import BaseData
 
 
 COLLECTION_NAME = mongo_crud_wrapper.mongo_config.get("NORMELIZED_DATA_COLLECTION")
 
 
-def create(raw_data: NormalizedData) -> NormalizedData:
-    raw_data_doc = raw_data.get_doc()
+def create(raw_data: NormalizedData) -> BaseData:
+    raw_data_doc = raw_data.to_doc()
     mongo_crud_wrapper.create(COLLECTION_NAME, raw_data_doc)
-    return NormalizedData(**raw_data_doc)
+    return NormalizedData.from_doc(raw_data_doc)
 
 
 def insert_bulk(bulk: Iterable[NormalizedData]) -> InsertManyResult:
-    doc_bulk = (item.get_doc() for item in bulk)
+    doc_bulk = (item.to_doc() for item in bulk)
     return mongo_crud_wrapper.insert_bulk(COLLECTION_NAME, doc_bulk)
 
 
-def get(raw_data_id: ObjectId) -> NormalizedData:
+def get(raw_data_id: ObjectId) -> BaseData:
     raw_data_id_doc = mongo_crud_wrapper.get(COLLECTION_NAME, raw_data_id)
-    return NormalizedData(**raw_data_id_doc)
+    return NormalizedData.from_doc(raw_data_id_doc)
 
 
-def get_bulk_by_user(user_id: ObjectId) -> Generator[NormalizedData, None, None]:
+def get_bulk_by_user(user_id: ObjectId) -> Generator[BaseData, None, None]:
     query = {"user_id": user_id}
     raw_data_results = mongo_crud_wrapper.get_by_query(COLLECTION_NAME, query)
-    return (NormalizedData(**result) for result in raw_data_results)
+    return (NormalizedData.from_doc(result) for result in raw_data_results)
 
 
 def remove(raw_data_id: ObjectId) -> DeleteResult:
@@ -38,13 +39,13 @@ def remove(raw_data_id: ObjectId) -> DeleteResult:
 
 
 def update(raw_data: NormalizedData) -> UpdateResult:
-    raw_data_doc = raw_data.get_doc()
+    raw_data_doc = raw_data.to_doc()
     return mongo_crud_wrapper.update(COLLECTION_NAME, raw_data_doc)
 
 
 def get_user_normalized_data_in_range(
     user_id: ObjectId, start_date: dt = None, end_date: dt = None
-) -> Generator[NormalizedData, None, None]:
+) -> Generator[BaseData, None, None]:
 
     query = {"user_id": user_id}
 
@@ -58,4 +59,4 @@ def get_user_normalized_data_in_range(
         query["date"]["$lt"] = end_date
 
     raw_data_results = mongo_crud_wrapper.get_by_query(COLLECTION_NAME, query)
-    return (NormalizedData(**result) for result in raw_data_results)
+    return (NormalizedData.from_doc(result) for result in raw_data_results)

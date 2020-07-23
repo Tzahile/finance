@@ -1,4 +1,9 @@
-from data.parser import parse
-from data.column import Column
+import pkgutil
+from os.path import dirname
+from importlib import import_module
 
-__all__ = ["Column", "parse"]
+
+pwd = dirname(__file__)
+for (_, name, _) in pkgutil.iter_modules([pwd]):
+    if name.endswith("_data"):
+        import_module("." + name, package=__name__)

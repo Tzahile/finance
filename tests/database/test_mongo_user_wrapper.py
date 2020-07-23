@@ -3,11 +3,11 @@ import pytest
 
 from pymongo.errors import DuplicateKeyError
 import hypothesis.strategies as st
-from hypothesis import given, infer
+from hypothesis import given
 from bson import ObjectId
 import mongomock
 
-from data.user import User
+from data.user_data import UserData
 from database import mongo_user_wrapper
 from database import mongo_crud_wrapper
 
@@ -16,29 +16,27 @@ class TestMongoUserWrapper(unittest.TestCase):
     def setUp(self) -> None:
         mongo_crud_wrapper.client = mongomock.MongoClient()
 
-    @given(st.builds(User, _id=infer))
-    def test_create_and_get(self, user: User):
+    @given(st.builds(UserData))
+    def test_create_and_get(self, user: UserData):
         new_user = mongo_user_wrapper.create(user)
-        self.assertEqual(new_user.first_name, user.first_name)
-        self.assertEqual(new_user.last_name, user.last_name)
 
-        if not user.uid:
-            user.uid = new_user.uid
+        user.uid = new_user.uid
         self.assertEqual(user, new_user)
 
         retrieved_user = mongo_user_wrapper.get(new_user.uid)
         self.assertEqual(retrieved_user, new_user)
 
-    @given(st.from_type(User))
-    def test_create_raise_duplicated_key_error(self, user: User):
+    @given(st.from_type(UserData))
+    def test_create_raise_duplicated_key_error(self, user: UserData):
         new_user = mongo_user_wrapper.create(user)
         self.assertRaises(DuplicateKeyError, mongo_user_wrapper.create, new_user)
 
-    def test_get_not_existing(self):
-        self.assertRaises(StopIteration, mongo_user_wrapper.get, ObjectId())
+    @given(st.from_type(ObjectId))
+    def test_get_not_existing(self, object_id):
+        self.assertRaises(StopIteration, mongo_user_wrapper.get, object_id)
 
-    @given(st.builds(User, _id=infer))
-    def test_create_and_remove(self, user: User):
+    @given(st.builds(UserData))
+    def test_create_and_remove(self, user: UserData):
         created_user = mongo_user_wrapper.create(user)
 
         status = mongo_user_wrapper.remove(created_user.uid)
@@ -48,8 +46,8 @@ class TestMongoUserWrapper(unittest.TestCase):
         with pytest.raises(StopIteration):
             mongo_user_wrapper.get(created_user.uid)
 
-    @given(st.builds(User, _id=infer), st.from_type(User))
-    def test_update(self, user: User, updated_user):
+    @given(st.builds(UserData), st.from_type(UserData))
+    def test_update(self, user: UserData, updated_user):
         created_user = mongo_user_wrapper.create(user)
 
         updated_user.uid = created_user.uid

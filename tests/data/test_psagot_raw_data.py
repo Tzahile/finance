@@ -1,28 +1,27 @@
 import hypothesis.strategies as st
-from hypothesis import given, infer
+from hypothesis import given
+from bson import ObjectId
 
-from data.psagot_raw_data import PsagotRawData
+from data.ordernet_api_data import OrdernetApiData
 
 
 real_float = st.floats(allow_infinity=False, allow_nan=False)
 
 
-@given(st.builds(PsagotRawData, _id=infer))
-def test_get_doc(psagot_raw_data: PsagotRawData):
-    psagot_raw_data_doc = psagot_raw_data.get_doc()
-
-    if psagot_raw_data.uid:
-        assert "_id" in psagot_raw_data_doc
-    else:
-        assert "_id" not in psagot_raw_data_doc
+@given(st.from_type(OrdernetApiData), st.one_of(st.from_type(ObjectId), st.none()))
+def test_get_doc(psagot_raw_data: OrdernetApiData, object_id):
+    psagot_raw_data.uid = object_id
+    psagot_raw_data_doc = psagot_raw_data.to_doc()
+    data_obj = OrdernetApiData.from_doc(psagot_raw_data_doc)
+    assert data_obj == psagot_raw_data
 
 
 @given(
-    st.builds(
-        PsagotRawData, _id=infer, i=real_float, k=real_float, l=real_float, m=real_float, n=real_float, o=real_float
-    )
+    st.builds(OrdernetApiData, i=real_float, k=real_float, l=real_float, m=real_float, n=real_float, o=real_float),
+    st.one_of(st.from_type(ObjectId), st.none()),
 )
-def test_to_json(psagot_raw_data: PsagotRawData):
+def test_to_json(psagot_raw_data: OrdernetApiData, object_id):
+    psagot_raw_data.uid = object_id
     psagot_raw_data_json = psagot_raw_data.to_json()
-    loaded_json = PsagotRawData.from_json(psagot_raw_data_json)
+    loaded_json = OrdernetApiData.from_json(psagot_raw_data_json)
     assert loaded_json == psagot_raw_data

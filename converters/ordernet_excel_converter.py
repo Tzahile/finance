@@ -9,20 +9,20 @@ from data.data_class_types import DataclassTypes
 
 
 @registered_converters.register
-class OrdernetConverter(BaseConverter):
-    provider = DataclassTypes.ORDERNET_API
+class OrdernetExcelConverter(BaseConverter):
+    provider = DataclassTypes.ORDERNET_EXCEL
 
     mapping = {
-        "date": {"name": "b", "pipeline": []},
-        "paper_id": {"name": "c", "pipeline": []},
-        "transaction_id": {"name": "f", "pipeline": []},
-        "quantity": {"name": "i", "pipeline": []},
-        "action": {"name": "j", "pipeline": []},
-        "cash_balance": {"name": "k", "pipeline": []},
-        "commission": {"name": "l", "pipeline": []},
-        "cost": {"name": "m", "pipeline": []},
-        "paper": {"name": "n", "pipeline": []},
-        "transaction": {"name": "o", "pipeline": []},
+        "date": {"name": "date", "pipeline": []},
+        "paper_id": {"name": "paper_id_transaction_id", "pipeline": []},
+        "transaction_id": {"name": "unknown1", "pipeline": []},
+        "quantity": {"name": "quantity", "pipeline": []},
+        "action": {"name": "action", "pipeline": []},
+        "cash_balance": {"name": "cash_balance", "pipeline": []},
+        "commission": {"name": "commission", "pipeline": []},
+        "cost": {"name": "cost", "pipeline": []},
+        "paper": {"name": "unknown2", "pipeline": []},
+        "transaction": {"name": "paper_or_transaction", "pipeline": []},
         "user_id": {"name": "user_id", "pipeline": []},
         "raw_data_id": {"name": "_id", "pipeline": []},
     }

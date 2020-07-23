@@ -4,16 +4,13 @@ import pytest
 
 from pymongo.errors import DuplicateKeyError
 import hypothesis.strategies as st
-from hypothesis import given, infer
+from hypothesis import given
 from bson import ObjectId
 import mongomock
 
-from data.psagot_raw_data import PsagotRawData
+from data.ordernet_api_data import OrdernetApiData
 from database import mongo_raw_data_wrapper
 from database import mongo_crud_wrapper
-
-
-object_id = ObjectId()
 
 
 class TestMongoUserWrapper(unittest.TestCase):
@@ -21,27 +18,27 @@ class TestMongoUserWrapper(unittest.TestCase):
     def setup_example() -> None:
         mongo_crud_wrapper.client = mongomock.MongoClient()
 
-    @given(st.builds(PsagotRawData, _id=infer))
-    def test_create_and_get(self, raw_data: PsagotRawData):
+    @given(st.builds(OrdernetApiData))
+    def test_create_and_get(self, raw_data: OrdernetApiData):
         new_raw_data = mongo_raw_data_wrapper.create(raw_data)
 
-        if not raw_data.uid:
-            raw_data.uid = new_raw_data.uid
+        raw_data.uid = new_raw_data.uid
         self.assertEqual(raw_data, new_raw_data)
 
         retrieved_user = mongo_raw_data_wrapper.get(new_raw_data.uid)
         self.assertEqual(retrieved_user, new_raw_data)
 
-    @given(st.from_type(PsagotRawData))
-    def test_create_raise_duplicated_key_error(self, raw_data: PsagotRawData):
+    @given(st.from_type(OrdernetApiData))
+    def test_create_raise_duplicated_key_error(self, raw_data: OrdernetApiData):
         new_raw_data = mongo_raw_data_wrapper.create(raw_data)
         self.assertRaises(DuplicateKeyError, mongo_raw_data_wrapper.create, new_raw_data)
 
-    def test_get_not_existing(self):
-        self.assertRaises(StopIteration, mongo_raw_data_wrapper.get, ObjectId())
+    @given(st.from_type(ObjectId))
+    def test_get_not_existing(self, object_id):
+        self.assertRaises(StopIteration, mongo_raw_data_wrapper.get, object_id)
 
-    @given(st.builds(PsagotRawData, _id=infer))
-    def test_create_and_remove(self, raw_data: PsagotRawData):
+    @given(st.builds(OrdernetApiData))
+    def test_create_and_remove(self, raw_data: OrdernetApiData):
         created_raw_data = mongo_raw_data_wrapper.create(raw_data)
 
         status = mongo_raw_data_wrapper.remove(created_raw_data.uid)
@@ -51,8 +48,8 @@ class TestMongoUserWrapper(unittest.TestCase):
         with pytest.raises(StopIteration):
             mongo_raw_data_wrapper.get(created_raw_data.uid)
 
-    @given(st.builds(PsagotRawData, _id=infer), st.from_type(PsagotRawData))
-    def test_update(self, raw_data: PsagotRawData, updated_raw_data):
+    @given(st.builds(OrdernetApiData), st.from_type(OrdernetApiData))
+    def test_update(self, raw_data: OrdernetApiData, updated_raw_data):
         created_raw_data = mongo_raw_data_wrapper.create(raw_data)
 
         updated_raw_data.uid = created_raw_data.uid
@@ -71,8 +68,8 @@ class TestMongoUserWrapper(unittest.TestCase):
 
         self.assertEqual(retrieved_raw_data, updated_raw_data)
 
-    @given(st.lists(st.builds(PsagotRawData, user_id=st.sampled_from([ObjectId()]))))
-    def test_get_bulk_by_user(self, raw_data_list: List[PsagotRawData]):
+    @given(st.lists(st.builds(OrdernetApiData, user_id=st.sampled_from([ObjectId()]))))
+    def test_get_bulk_by_user(self, raw_data_list: List[OrdernetApiData]):
         result = mongo_raw_data_wrapper.insert_bulk(raw_data_list)
         self.assertEqual(len(result.inserted_ids), len(raw_data_list))
 
