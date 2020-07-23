@@ -16,12 +16,18 @@ This project aims to become a rich (no pan intended) financial dashboard -
 #### Prerequisite
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 1. python 3.8
 =======
 1. python3.8
 >>>>>>> adjusted instructions paths
 2. Dependencies: `cd server && pip install -r requirements.txt`
 3. Or, if you want to contribute - dev-Dependencies: `cd server && pip install -r requirements/dev.txt`
+=======
+1. python3.8
+2. Dependencies: `pip install -r requirements.txt`
+3. Or, if you want to contribute - dev-Dependencies: `pip install -r requirements/dev.txt`
+>>>>>>> Expanded installation guidance + lint
 
 #### Run
 
