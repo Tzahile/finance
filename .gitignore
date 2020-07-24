@@ -2,6 +2,6 @@ venv/
 .idea/
 .hypothesis
 __pycache__/
-*.json
+# *.json
 credentials.yaml
 **.xlsx
