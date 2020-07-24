@@ -5,36 +5,44 @@ much work to be done here and any help is highly
 appreciated - feel free to reach out and talk :smiley:
 
 This project aims to become a rich (no pan intended) financial dashboard -
+
 - automatically(/manually) integrating with your financial accounts and reports
 - providing the user with detailed infographics and alerts
 - featuring planners, calculators, simulators
 - while allowing complete anonymity
 
-###### We currently focus our efforts in creating an end-to-end integration with ordernet spark investing platform     
+###### We currently focus our efforts in creating an end-to-end integration with ordernet spark investing platform
 
 #### Prerequisite
+
 1. python3.8
-2. `pip install -r requirements.txt`
-3. `pip install -r dev_requirements.txt`
+2. Dependencies: `pip install -r requirements.txt`
+3. Or, if you want to contribute - dev-Dependencies: `pip install -r requirements/dev.txt`
 
 #### Run
+
+_Currently, docker engine is required_
+
 ```bash
-find ./deployment -type f -iname "*.sh" -exec chmod +x {} \; 
+find ./deployment -type f -iname "*.sh" -exec chmod +x {} \;
 chmod +x ./run.sh
 
 ./run.sh
 ```
 
 #### Code Quality
+
 Our code base is being strictly checked with the following tools:
+
 - flake8
 - mypy
-- bandit 
+- bandit
 - pylint
 - black
 - pytest
 
 ##### Running static-analysis locally
+
 ```bash
 ./static-analysis [--stop-on-failure|mypy|flake8|black|bandit|pylint]
 ```
@@ -42,7 +50,7 @@ Our code base is being strictly checked with the following tools:
 - Run all of the tools to get a summary -
 
 ```bash
-(venv) mp@x:~/code/finance$ ./static_analysis.sh 
+(venv) mp@x:~/code/finance$ ./static_analysis.sh
 mypy......FAIL
 flake8....PASS
 pylint....PASS
@@ -74,6 +82,7 @@ We've adopted Black as our main python formatter.
 We recommend you bundle it inside your IDE, or alternatively run it from the command line.
 
 To reformat the code and run it with the same configuration as we do with our CI, use -
+
 ```bash
 ./format.sh
-``` 
+```
