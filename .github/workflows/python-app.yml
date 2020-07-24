@@ -49,8 +49,8 @@ jobs:
       - name: pylint
         if: ${{ always() }}
         run: |
-          cd ..
-          pylint finance                                                          \
+          cd finance
+          pylint server                                                          \
             --max-line-length=120                                                 \
             --ignore-imports=yes                                                  \
             --disable="missing-docstring,
