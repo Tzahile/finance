@@ -5,72 +5,74 @@ name: Python
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   static-analysis:
-
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
 
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
+      - name: Install dependencies
+        run: |
+          cd server
+          python -m pip install --upgrade pip
+          pip install -r requirements/dev.txt
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements/dev.txt
+      - name: mypy
+        if: ${{ always() }}
+        run: |
+          cd server
+          mypy .                          \
+            --ignore-missing-imports      \
+            --disallow-untyped-defs       \
+            --disallow-untyped-decorators \
+            --disallow-incomplete-defs
 
-    - name: mypy
-      if: ${{ always() }}
-      run: |
-        mypy .                          \
-          --ignore-missing-imports      \
-          --disallow-untyped-defs       \
-          --disallow-untyped-decorators \
-          --disallow-incomplete-defs
+      - name: flake8
+        if: ${{ always() }}
+        run: |
+          cd server
+          # check line-length without printing source
+          flake8 . --count --statistics --select=E501 --max-line-length=127
 
-    - name: flake8
-      if: ${{ always() }}
-      run: |
-        # check line-length without printing source
-        flake8 . --count --statistics --select=E501 --max-line-length=127
+          # check the rest while printing source
+          flake8 . --count --statistics --ignore=E501 --show-source
 
-        # check the rest while printing source
-        flake8 . --count --statistics --ignore=E501 --show-source
+      - name: pylint
+        if: ${{ always() }}
+        run: |
+          cd ..
+          pylint finance                                                          \
+            --max-line-length=120                                                 \
+            --ignore-imports=yes                                                  \
+            --disable="missing-docstring,
+                      no-member,
+                      broad-except,
+                      invalid-name,
+                      bad-continuation,
+                      too-many-instance-attributes,
+                      R0801"
 
-    - name: pylint
-      if: ${{ always() }}
-      run: |
-        cd ..
-        pylint finance                                                          \
-          --max-line-length=120                                                 \
-          --ignore-imports=yes                                                  \
-          --disable="missing-docstring,
-                    no-member,
-                    broad-except,
-                    invalid-name,
-                    bad-continuation,
-                    too-many-instance-attributes,
-                    R0801"
+      - name: bandit
+        if: ${{ always() }}
+        run: |
+          cd server
+          bandit . -r -x ./tests
 
-    - name: bandit
-      if: ${{ always() }}
-      run: |
-        bandit . -r -x ./tests
+      - name: black
+        if: ${{ always() }}
+        run: |
+          black . --check --line-length=120 --target-version=py38 --diff
 
-    - name: black
-      if: ${{ always() }}
-      run: |
-        black . --check --line-length=120 --target-version=py38 --diff
-
-    - name: pytest
-      if: ${{ success() }}
-      run: |
-        python -m pytest --cov=.
+      - name: pytest
+        if: ${{ success() }}
+        run: |
+          python -m pytest --cov=.
