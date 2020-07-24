@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-TOP_LEVEL_DIR="finance"
+TOP_LEVEL_DIR="$(cd "$(dirname "$0")"; pwd)"
 
 
 # run this script from project's parent directory
