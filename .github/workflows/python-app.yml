@@ -74,4 +74,4 @@ jobs:
       - name: pytest
         if: ${{ success() }}
         run: |
-          python -m pytest --cov=.
+          python -m pytest --cov=server
